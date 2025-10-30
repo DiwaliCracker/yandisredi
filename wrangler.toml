@@ -1,5 +1,6 @@
-name = "yandex-hls-finder"
-main = "worker.js"
-compatibility_date = "2025-10-30"
+name = "yandex-hls-worker"
+main = "index.js"
+compatibility_date = "2024-10-01"
 
-# If using a KV or other features, add here. For basic worker this is enough.
+[vars]
+NODE_ENV = "production"
