@@ -1,0 +1,5 @@
+name = "yandex-hls-finder"
+main = "worker.js"
+compatibility_date = "2025-10-30"
+
+# If using a KV or other features, add here. For basic worker this is enough.
