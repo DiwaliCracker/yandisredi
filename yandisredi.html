@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yandex Direct Video</title>
+  <script>
+    async function generateLink() {
+      const params = new URLSearchParams(window.location.search);
+      const inputUrl = params.get('url');
+
+      if (!inputUrl) {
+        document.body.textContent = "❌ Missing ?url= parameter";
+        return;
+      }
+
+      try {
+        // Normalize Yandex domain (.com → .ru)
+        let normalizedUrl = inputUrl.replace("disk.yandex.com", "disk.yandex.ru");
+
+        // Detect /d/ or /i/ link type
+        let fileId = null;
+        if (normalizedUrl.includes("/d/")) {
+          fileId = normalizedUrl.split("/d/")[1];
+        } else if (normalizedUrl.includes("/i/")) {
+          fileId = normalizedUrl.split("/i/")[1];
+        }
+
+        if (!fileId) {
+          document.body.textContent = "❌ Invalid Yandex link";
+          return;
+        }
+
+        // Build Yandex API URL
+        const apiUrl = `https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=${encodeURIComponent(`https://disk.yandex.ru/i/${fileId}`)}`;
+
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+
+        if (data.error) {
+          document.body.textContent = `⚠️ ${data.description || "Failed to get direct link"}`;
+          return;
+        }
+
+        const directUrl = data.href;
+
+        // If opened directly in a browser → redirect to playable video
+        if (window.top === window.self) {
+          window.location.href = directUrl;
+        } else {
+          // If embedded (like inside video.html), return JSON
+          document.body.textContent = JSON.stringify({ direct_url: directUrl }, null, 2);
+        }
+
+      } catch (e) {
+        document.body.textContent = `❌ ${e.message}`;
+      }
+    }
+
+    window.onload = generateLink;
+  </script>
+</head>
+<body style="font-family: monospace; white-space: pre; color: white; background: #000;"></body>
+</html>
