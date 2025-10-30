@@ -1,5 +1,5 @@
 {
-  "name": "yandex-hls-worker",
+  "name": "yandisredi",
   "version": "1.0.0",
   "description": "Cloudflare Worker to extract and proxy Yandex Disk HLS (m3u8) video URLs",
   "main": "index.js",
